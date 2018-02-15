@@ -22,7 +22,10 @@ import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component("consumer")
 public class Consumer {
 
     private static final Logger LOGGER =
@@ -33,15 +36,16 @@ public class Consumer {
     private String clientId;
     private Connection connection;
     private MessageConsumer messageConsumer;
+    private ConnectionFactory connectionFactory;
+
+    @Autowired
+    Consumer(ConnectionFactory connectionFactory){
+        this.connectionFactory = connectionFactory;
+    }
 
     public void create(String clientId, String queueName)
             throws JMSException {
         this.clientId = clientId;
-
-        // create a Connection Factory
-        ConnectionFactory connectionFactory =
-                new ActiveMQConnectionFactory(
-                        ActiveMQConnection.DEFAULT_BROKER_URL);
 
         // create a Connection
         connection = connectionFactory.createConnection();

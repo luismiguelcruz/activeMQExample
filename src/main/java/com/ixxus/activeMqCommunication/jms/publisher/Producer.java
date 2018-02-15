@@ -12,7 +12,12 @@ import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
+@Component("producer")
 public class Producer {
 
     private static final Logger LOGGER =
@@ -22,23 +27,28 @@ public class Producer {
     private Connection connection;
     private Session session;
     private MessageProducer messageProducer;
+    private ConnectionFactory connectionFactory;
+
+    @Autowired
+    Producer(ConnectionFactory connectionFactory){
+        this.connectionFactory = connectionFactory;
+    }
 
     public void create(String clientId, String queueName)
             throws JMSException {
         this.clientId = clientId;
 
         // create a Connection Factory
-        ConnectionFactory connectionFactory =
+/*        ConnectionFactory connectionFactory =
                 new ActiveMQConnectionFactory(
-                        "tcp://localhost:61616");
+                        "tcp://localhost:61616");*/
 
         // create a Connection
         connection = connectionFactory.createConnection();
         connection.setClientID(clientId);
 
         // create a Session
-        session =
-                connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+        session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
         // create the Queue to which messages will be sent
         Queue queue = session.createQueue(queueName);
@@ -73,5 +83,9 @@ public class Producer {
         messageProducer.send(textMessage);
 
         LOGGER.debug("producer sent message with text='{}'", text);
+    }
+
+    public Connection getConnection(){
+        return connection;
     }
 }
