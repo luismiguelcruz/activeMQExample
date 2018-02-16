@@ -37,10 +37,12 @@ public class Consumer {
     private Connection connection;
     private MessageConsumer messageConsumer;
     private ConnectionFactory connectionFactory;
+    private Queue queue;
 
     @Autowired
-    Consumer(ConnectionFactory connectionFactory){
+    Consumer(ConnectionFactory connectionFactory, Queue queue){
         this.connectionFactory = connectionFactory;
+        this.queue = queue;
     }
 
     public void create(String clientId, String queueName)

@@ -1,17 +1,16 @@
 package com.ixxus.activeMqCommunication.bootApp;
 
-import ch.qos.logback.core.joran.spi.ConsoleTarget;
-import ch.qos.logback.core.net.SyslogOutputStream;
-import com.ixxus.activeMqCommunication.jms.Application;
 import com.ixxus.activeMqCommunication.jms.consumer.Consumer;
 import com.ixxus.activeMqCommunication.jms.publisher.Producer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.jms.annotation.EnableJms;
+import org.springframework.jms.core.JmsTemplate;
 
-import javax.jms.Connection;
 import javax.jms.JMSException;
 
 //@SpringBootApplication
+@EnableJms
 public class ActiveMqCommunicationApplication {
 
 	public static void main(String[] args) {
@@ -21,12 +20,9 @@ public class ActiveMqCommunicationApplication {
 		final ApplicationContext context =
 				new ClassPathXmlApplicationContext("bootApp/spring-config.xml");
 
-        /*Application app = new Application();
-
-        app.connectionFactory();*/
-
         String text = "Hello World!";
 
+       // JmsTemplate jmsTemplate = context.getBean(JmsTemplate.class);
 		Producer producer = (Producer)context.getBean("producer");
         Consumer consumer = (Consumer)context.getBean("consumer");
 
@@ -40,8 +36,6 @@ public class ActiveMqCommunicationApplication {
 		} catch (JMSException e) {
 			e.printStackTrace();
 		}
-
-		System.out.println();
 
         try {
             producer.close();
